@@ -1,16 +1,10 @@
 import Link from "next/link";
-import { Dumbbell } from "lucide-react";
 
 export default function NotFound() {
   return (
     <main className="flex min-h-[70vh] items-center justify-center bg-[#0b0d0f] px-4">
       <div className="text-center">
-        <Dumbbell
-          size={48}
-          className="mx-auto text-[#a8d400]"
-        />
-
-        <p className="mt-6 text-sm font-bold tracking-[0.25em] text-[#a8d400]">
+        <p className="text-sm font-bold tracking-[0.25em] text-[#a8d400]">
           404 ERROR
         </p>
 
@@ -24,7 +18,7 @@ export default function NotFound() {
 
         <Link
           href="/"
-          className="mt-7 inline-flex rounded-md bg-[#a8d400] px-5 py-3 text-sm font-bold text-[#10130a] transition hover:bg-[#b7df18]"
+          className="mt-7 inline-flex rounded-md bg-[#a8d400] px-5 py-3 text-sm font-bold text-[#10130a]"
         >
           Back to Home
         </Link>
