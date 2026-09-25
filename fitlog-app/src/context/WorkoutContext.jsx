@@ -15,7 +15,11 @@ export function WorkoutProvider({ children }) {
   const [saved, setSaved] = useState([]);
   const [loaded, setLoaded] = useState(false);
 
-  // Load saved data from localStorage
+  /*
+    localStorage is browser-only.
+    We intentionally restore saved client data after the component mounts.
+  */
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
       const storedPlan = localStorage.getItem("fitlog-plan");
@@ -28,21 +32,20 @@ export function WorkoutProvider({ children }) {
       if (storedSaved) {
         setSaved(JSON.parse(storedSaved));
       }
-    } catch {
-      console.error("Could not load FitLog data from localStorage.");
+    } catch (error) {
+      console.error("Could not load FitLog data from localStorage.", error);
     } finally {
       setLoaded(true);
     }
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
-  // Save plan to localStorage
   useEffect(() => {
     if (!loaded) return;
 
     localStorage.setItem("fitlog-plan", JSON.stringify(plan));
   }, [plan, loaded]);
 
-  // Save saved-list to localStorage
   useEffect(() => {
     if (!loaded) return;
 
