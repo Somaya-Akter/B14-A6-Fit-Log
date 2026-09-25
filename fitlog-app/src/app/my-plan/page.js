@@ -10,6 +10,7 @@ import {
   Star,
   X,
   CheckCircle2,
+  ChevronDown,
 } from "lucide-react";
 
 import { useWorkout } from "@/context/WorkoutContext";
@@ -25,23 +26,53 @@ export default function MyPlanPage() {
   } = useWorkout();
 
   const [activeTab, setActiveTab] = useState("plan");
+  const [sortBy, setSortBy] = useState("duration");
 
+  const currentList = activeTab === "plan" ? plan : saved;
+
+  // Metrics change according to the selected tab
   const metrics = useMemo(() => {
     return {
-      exercises: plan.length,
-      minutes: plan.reduce(
+      exercises: currentList.length,
+
+      minutes: currentList.reduce(
         (total, workout) => total + Number(workout.duration || 0),
         0
       ),
-      calories: plan.reduce(
+
+      calories: currentList.reduce(
         (total, workout) =>
           total + Number(workout.caloriesBurned || 0),
         0
       ),
     };
-  }, [plan]);
+  }, [currentList]);
 
-  const currentList = activeTab === "plan" ? plan : saved;
+  // Challenge: Sort the currently selected list
+  const sortedList = useMemo(() => {
+    const list = [...currentList];
+
+    if (sortBy === "duration") {
+      return list.sort(
+        (a, b) => Number(a.duration) - Number(b.duration)
+      );
+    }
+
+    if (sortBy === "calories") {
+      return list.sort(
+        (a, b) =>
+          Number(b.caloriesBurned) - Number(a.caloriesBurned)
+      );
+    }
+
+    if (sortBy === "rating") {
+      return list.sort(
+        (a, b) => Number(b.rating) - Number(a.rating)
+      );
+    }
+
+    return list;
+  }, [currentList, sortBy]);
 
   return (
     <main className="min-h-screen bg-[#0b0d0f]">
@@ -66,6 +97,7 @@ export default function MyPlanPage() {
           <div className="rounded-xl border border-white/10 bg-[#14171a] p-5">
             <div className="flex items-center gap-3 text-zinc-400">
               <Dumbbell size={19} className="text-[#a8d400]" />
+
               <span className="text-xs font-bold uppercase tracking-widest">
                 Exercises
               </span>
@@ -79,6 +111,7 @@ export default function MyPlanPage() {
           <div className="rounded-xl border border-white/10 bg-[#14171a] p-5">
             <div className="flex items-center gap-3 text-zinc-400">
               <Clock3 size={19} className="text-[#a8d400]" />
+
               <span className="text-xs font-bold uppercase tracking-widest">
                 Minutes
               </span>
@@ -92,6 +125,7 @@ export default function MyPlanPage() {
           <div className="rounded-xl border border-white/10 bg-[#14171a] p-5">
             <div className="flex items-center gap-3 text-zinc-400">
               <Flame size={19} className="text-[#a8d400]" />
+
               <span className="text-xs font-bold uppercase tracking-widest">
                 Calories
               </span>
@@ -103,31 +137,63 @@ export default function MyPlanPage() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="mt-10 flex gap-2 border-b border-white/10">
-          <button
-            type="button"
-            onClick={() => setActiveTab("plan")}
-            className={`border-b-2 px-4 py-3 text-sm font-bold transition ${
-              activeTab === "plan"
-                ? "border-[#a8d400] text-white"
-                : "border-transparent text-zinc-500 hover:text-white"
-            }`}
-          >
-            Today&apos;s Plan ({plan.length})
-          </button>
+        {/* Tabs + Sort */}
+        <div className="mt-10 flex flex-col gap-4 border-b border-white/10 pb-3 sm:flex-row sm:items-end sm:justify-between">
+          {/* Tabs */}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setActiveTab("plan")}
+              className={`border-b-2 px-4 py-3 text-sm font-bold transition ${
+                activeTab === "plan"
+                  ? "border-[#a8d400] text-white"
+                  : "border-transparent text-zinc-500 hover:text-white"
+              }`}
+            >
+              Today&apos;s Plan ({plan.length})
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setActiveTab("saved")}
-            className={`border-b-2 px-4 py-3 text-sm font-bold transition ${
-              activeTab === "saved"
-                ? "border-[#a8d400] text-white"
-                : "border-transparent text-zinc-500 hover:text-white"
-            }`}
-          >
-            Saved ({saved.length})
-          </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("saved")}
+              className={`border-b-2 px-4 py-3 text-sm font-bold transition ${
+                activeTab === "saved"
+                  ? "border-[#a8d400] text-white"
+                  : "border-transparent text-zinc-500 hover:text-white"
+              }`}
+            >
+              Saved ({saved.length})
+            </button>
+          </div>
+
+          {/* Challenge Sort Dropdown */}
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="plan-sort"
+              className="text-sm font-semibold text-zinc-400"
+            >
+              Sort By
+            </label>
+
+            <div className="relative">
+              <select
+                id="plan-sort"
+                value={sortBy}
+                onChange={(event) => setSortBy(event.target.value)}
+                className="appearance-none rounded-md border border-white/15 bg-[#14171a] py-2.5 pl-4 pr-10 text-sm font-semibold text-white outline-none transition focus:border-[#a8d400]"
+              >
+                <option value="duration">Duration</option>
+                <option value="calories">Calories</option>
+                <option value="rating">Rating</option>
+              </select>
+
+              <ChevronDown
+                size={17}
+                aria-hidden="true"
+                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#a8d400]"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Loading */}
@@ -139,7 +205,7 @@ export default function MyPlanPage() {
 
         {/* Empty State */}
         {loaded && currentList.length === 0 && (
-          <div className="flex min-h-[360px] flex-col items-center justify-center rounded-xl border border-dashed border-white/15 bg-[#111315] px-6 text-center">
+          <div className="mt-7 flex min-h-[360px] flex-col items-center justify-center rounded-xl border border-dashed border-white/15 bg-[#111315] px-6 text-center">
             <Dumbbell size={42} className="text-zinc-600" />
 
             <h2 className="mt-5 font-[var(--font-oswald)] text-3xl font-bold uppercase text-white">
@@ -160,9 +226,9 @@ export default function MyPlanPage() {
         )}
 
         {/* Workout List */}
-        {loaded && currentList.length > 0 && (
+        {loaded && sortedList.length > 0 && (
           <div className="mt-7 space-y-4">
-            {currentList.map((workout) => (
+            {sortedList.map((workout) => (
               <article
                 key={workout.id}
                 className="flex flex-col gap-5 rounded-xl border border-white/10 bg-[#14171a] p-4 md:flex-row md:items-center"
