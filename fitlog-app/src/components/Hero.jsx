@@ -7,7 +7,7 @@ export default function Hero() {
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-16 sm:px-6 md:py-20 lg:grid-cols-2 lg:px-8 lg:py-24">
         {/* Left Content */}
         <div>
-          <p className="mb-4 text-sm font-bold tracking-[0.25em] text-[#ccff00]">
+          <p className="mb-4 text-sm font-bold tracking-[0.25em] text-[#b6dc28]">
             WORKOUT LIBRARY
           </p>
 
@@ -24,7 +24,7 @@ export default function Hero() {
 
           <Link
             href="#library"
-            className="mt-8 inline-flex items-center gap-2 rounded-md bg-[#ccff00] px-6 py-3 text-sm font-bold uppercase tracking-wide text-black transition hover:bg-[#b8e600]"
+            className="mt-8 inline-flex items-center gap-2 rounded-md bg-[#a8d400] px-6 py-3 text-sm font-bold uppercase tracking-wide text-[#10130a] transition hover:bg-[#b7df18]"
           >
             <span aria-hidden="true">↓</span>
             Browse Workouts

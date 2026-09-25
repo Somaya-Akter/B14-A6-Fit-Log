@@ -1,6 +1,10 @@
 import { Inter, Oswald } from "next/font/google";
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
+
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Providers from "@/components/Providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,9 +26,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${oswald.variable}`}>
       <body className="min-h-screen antialiased">
-        <Navbar />
-
-        {children}
+        <Providers>
+          <Navbar />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

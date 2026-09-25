@@ -3,16 +3,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useWorkout } from "@/context/WorkoutContext";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { plan, saved } = useWorkout();
 
-  const isWorkoutActive = pathname === "/";
+  const isWorkoutActive =
+    pathname === "/" || pathname.startsWith("/workouts");
+
   const isPlanActive = pathname === "/my-plan";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0b0d0f]/95 backdrop-blur">
-      <nav className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0b0d0f]/95 backdrop-blur-md">
+      <nav className="mx-auto flex min-h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center gap-3">
           <Image
@@ -30,44 +34,52 @@ export default function Navbar() {
         </Link>
 
         {/* Navigation */}
-        <div className="flex items-center gap-2 sm:gap-6">
+        <div className="flex items-center gap-8">
           <Link
             href="/#library"
-            className={`rounded-md px-2 py-2 text-sm font-semibold transition sm:px-3 ${
+            className={`relative px-1 py-3 text-sm font-semibold transition ${
               isWorkoutActive
-                ? "text-[#ccff00]"
+                ? "text-white"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
             Workout
+
+            {isWorkoutActive && (
+              <span className="absolute bottom-1 left-1/2 h-1 w-3 -translate-x-1/2 rounded-full bg-zinc-400" />
+            )}
           </Link>
 
           <Link
             href="/my-plan"
-            className={`rounded-md px-2 py-2 text-sm font-semibold transition sm:px-3 ${
+            className={`relative px-1 py-3 text-sm font-semibold transition ${
               isPlanActive
-                ? "text-[#ccff00]"
+                ? "text-white"
                 : "text-zinc-400 hover:text-white"
             }`}
           >
             My Plan
+
+            {isPlanActive && (
+              <span className="absolute bottom-1 left-1/2 h-1 w-3 -translate-x-1/2 rounded-full bg-zinc-400" />
+            )}
           </Link>
         </div>
 
-        {/* Status Counters */}
+        {/* Status Badges */}
         <div className="flex shrink-0 items-center gap-2">
           <Link
             href="/my-plan"
-            className="rounded-full bg-[#ccff00] px-3 py-2 text-xs font-bold text-black transition hover:bg-[#b8e600] sm:px-4 sm:text-sm"
+            className="rounded-full bg-[#a8d400] px-4 py-2 text-xs font-bold text-[#10130a] transition hover:bg-[#b7df18] sm:text-sm"
           >
-            Plan <span className="ml-1">0</span>
+            Plan <span className="ml-1">{plan.length}</span>
           </Link>
 
           <Link
             href="/my-plan"
-            className="rounded-full border border-zinc-600 px-3 py-2 text-xs font-bold text-white transition hover:border-[#ccff00] hover:text-[#ccff00] sm:px-4 sm:text-sm"
+            className="rounded-full border border-zinc-600 px-4 py-2 text-xs font-bold text-white transition hover:border-zinc-400 sm:text-sm"
           >
-            Saved <span className="ml-1">0</span>
+            Saved <span className="ml-1">{saved.length}</span>
           </Link>
         </div>
       </nav>
